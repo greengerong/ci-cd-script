@@ -1,13 +1,15 @@
 #/bin/bash
 # require java 1.7 home, unzip, wget tools
-#export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home"
 
 odl_file="distribution-karaf-0.2.1-Helium-SR1"
 odl_url="http://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.2.1-Helium-SR1/$odl_file.zip"
-odl_page_url="http://blog.csdn.net/xiajing20060721/article/details/6327420/1" #去掉/1就是正确的
+odl_page_url="http://localhost:8181/dlux/index.html" 
 maxTimes=10
 
-"$odl_file/bin/stop" 
+#export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home"
+export JAVA_OPTS="-Xmx4096m -XX:MaxPermSize=512m"
+
+bash "$odl_file/bin/stop" 
 j=$(ps -a | grep -ir karaf )   
   if [ "$j" != "" ] ;then
      set $j    
@@ -19,7 +21,8 @@ rm -rf "$odl_dir"
 wget "$odl_url" 
 unzip -o "$odl_file.zip" 
 rm -rf "$odl_file.zip"
-"$odl_file/bin/start" 
+cp -f org.apache.karaf.features.cfg "$odl_file/etc/"
+bash "$odl_file/bin/start" 
 
 times=1
 while [ $times -le $maxTimes ]
@@ -29,7 +32,7 @@ do
   if [ $http_code != 200 ] ;then
     echo "Got server response with $http_code. "
     times=$[ $times + 1 ]
-    # sleep 60
+    sleep 60
   else 
     echo "Server was response $http_code."
     break
