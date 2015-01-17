@@ -9,20 +9,29 @@ maxTimes=10
 #export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home"
 export JAVA_OPTS="-Xmx4096m -XX:MaxPermSize=512m"
 
-bash "$odl_file/bin/stop" 
-j=$(ps -a | grep -ir karaf )   
+
+j=$(ps -a | grep -i karaf )   
   if [ "$j" != "" ] ;then
+     bash "$odl_file/bin/stop"
      set $j    
-     kill $1       
+     kill $1  
+     echo -e "kill karaf server...." 
   else 
      echo "No karaf running"      
   fi  
-rm -rf "$odl_dir"
+
+rm -rf "$odl_file"
+echo -e "delete $odl_file....." 
 wget "$odl_url" 
-unzip -o "$odl_file.zip" 
+unzip -o -q "$odl_file.zip" 
+echo -e "unzip $odl_file.zip finish......"
 rm -rf "$odl_file.zip"
 cp -f org.apache.karaf.features.cfg "$odl_file/etc/"
 bash "$odl_file/bin/start" 
+
+echo "Wait for odl page started....."
+
+sleep 15
 
 times=1
 while [ $times -le $maxTimes ]
@@ -38,7 +47,7 @@ do
     break
   fi
 
-  j=$(ps -a | grep -ir curl )   
+  j=$(ps -a | grep -i curl )   
   if [ "$j" != "" ] ;then
      set $j    
      kill $1       
