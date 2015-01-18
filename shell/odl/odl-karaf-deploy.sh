@@ -20,7 +20,7 @@ j=$(ps -a | grep -i karaf )
      echo "No karaf running"      
   fi  
 
-rm -rf "$odl_file"
+rm -rf "./$odl_file"
 echo -e "delete $odl_file....." 
 wget "$odl_url" 
 unzip -o -q "$odl_file.zip" 
