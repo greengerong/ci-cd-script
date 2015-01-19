@@ -37,7 +37,8 @@ times=1
 while [ $times -le $maxTimes ]
 do
   echo "($times time) try to get the url $odl_page_url"
-  http_code=$(curl -o templ/response -s -w %{http_code} $odl_page_url) #http://xxx.com
+  http_code=$(curl -o templ/response -s -w %{http_code} $odl_page_url) 
+  #Also you can test login test like that: curl -o templ/response -s -w %{http_code} -H "Authorization:Basic YWRtaW46YWRtaW4="  $odl_page_url
   if [ $http_code != 200 ] ;then
     echo "Got server response with $http_code. "
     times=$[ $times + 1 ]
